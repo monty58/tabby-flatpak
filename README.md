@@ -1,6 +1,6 @@
 # Terminus Flatpak
 
-This is a flatpak build configuration based on several electron flatpak apps.
+This is a [Terminus](https://eugeny.github.io/terminus/) build configuration for [Flatpak](https://flatpak.org/) based on several electron flatpak apps.
 
 There are a few issues that could not be solved:
 * Serial connections don't work because they are blocked by flatpak sandboxing.
