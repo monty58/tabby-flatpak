@@ -1,0 +1,61 @@
+app-id: com.eugeny.terminus
+runtime: org.freedesktop.Platform
+runtime-version: '20.08'
+branch: stable
+sdk: org.freedesktop.Sdk
+base: io.atom.electron.BaseApp
+base-version: stable
+command: terminus-wrapper
+separate-locales: false
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --socket=system-bus
+  - --socket=session-bus
+  - --share=network
+  - --device=dri
+  - --filesystem=host
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.secrets
+build-options:
+  cflags: -O2 -g
+  cxxflags: -O2 -g
+  env:
+    NPM_CONFIG_LOGLEVEL: info
+modules:
+  - shared-modules/libsecret/libsecret.json
+  - name: terminus
+    buildsystem: simple
+    sources:
+      - type: archive
+        url: https://github.com/Eugeny/terminus/releases/download/v1.0.135/terminus-1.0.135-linux.tar.gz
+        sha256: 0da281a70fc275e5b28687f9f902788b64ca3e4fa7e066d5f42a1c9ac0c8c142
+        dest: main
+      - generated-sources.json
+      # Wrapper to launch the app
+      - type: script
+        dest-filename: terminus-wrapper
+        commands:
+          - exec /app/main/terminus --no-sandbox
+      - type: dir
+        path: icons/hicolor
+      - type: file
+        path: com.eugeny.terminus.desktop
+        sha256: e737f1dd6614af7b9aeaf4440b3ae6273e449029fa67fe127feb8151e1e88c9f
+    build-commands:
+      - ls -la
+      - install -Dm644 16x16/apps/terminus.png /app/share/icons/hicolor/16x16/apps/com.eugeny.terminus.png
+      - install -Dm644 32x32/apps/terminus.png /app/share/icons/hicolor/32x32/apps/com.eugeny.terminus.png
+      - install -Dm644 64x64/apps/terminus.png /app/share/icons/hicolor/64x64/apps/com.eugeny.terminus.png
+      - install -Dm644 128x128/apps/terminus.png /app/share/icons/hicolor/128x128/apps/com.eugeny.terminus.png
+      - install -Dm644 256x256/apps/terminus.png /app/share/icons/hicolor/256x256/apps/com.eugeny.terminus.png
+      - install -Dm644 512x512/apps/terminus.png /app/share/icons/hicolor/512x512/apps/com.eugeny.terminus.png
+      - install -Dm644 -t /app/share/applications com.eugeny.terminus.desktop
+       - mkdir -p /app/main /app/bin
+      - cp -ra main/* /app/main/
+      - chmod a+x /app/main/terminus
+      - "sed -i -e 's%/etc/shells%/app/shells%' /app/main/resources/builtin-plugins/terminus-terminal/dist/index.js"
+      - "echo /bin/bash > /app/shells"
+      - install terminus-wrapper /app/bin/
