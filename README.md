@@ -2,6 +2,11 @@
 
 This is a [Tabby](https://eugeny.github.io/tabby/) build configuration for [Flatpak](https://flatpak.org/) based on several electron flatpak apps.
 
-There are a few issues that could not be solved:
-* Serial connections don't work because they are blocked by flatpak sandboxing.
-* Even though Tabby can access host executables with --filesystem=host argument, it has limited usage as a sandboxed app because it can't access libraries installed on host. `flatpak-spawn --host` can be used as a workaround to execute commands on host, but it's not convenient.
+## Build instructions
+
+```
+flatpak install io.atom.electron.BaseApp org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08
+flatpak-builder build-dir com.eugeny.tabby.yml
+flatpak-builder --user --install --force-clean build-dir com.eugeny.tabby.yml
+flatpak run com.eugeny.tabby
+```
