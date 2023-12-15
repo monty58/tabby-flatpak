@@ -1,0 +1,63 @@
+app-id: com.eugeny.tabby
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+branch: stable
+sdk: org.freedesktop.Sdk
+base: io.atom.electron.BaseApp
+base-version: stable
+command: tabby-wrapper
+separate-locales: false
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --socket=system-bus
+  - --socket=session-bus
+  - --share=network
+  - --device=dri
+  - --filesystem=host
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.secrets
+build-options:
+  cflags: -O2 -g
+  cxxflags: -O2 -g
+  env:
+    NPM_CONFIG_LOGLEVEL: info
+modules:
+  - shared-modules/libsecret/libsecret.json
+  - name: tabby
+    buildsystem: simple
+    sources:
+      - type: archive
+        url: https://github.com/Eugeny/tabby/releases/download/v1.0.205/tabby-1.0.205-linux-x64.tar.gz
+        sha256: ea72f306be488923744c08ff19edd13137d136b865703e9037fdcb858252f2c1
+        dest: main
+      - generated-sources.json
+      # Wrapper to launch the app
+      - type: script
+        dest-filename: tabby-wrapper
+        commands:
+          - exec /app/main/tabby --no-sandbox
+      - type: dir
+        path: icons/hicolor
+      - type: file
+        path: com.eugeny.tabby.desktop
+        sha256: 94b084f6d73efad97e0c5462396a91fa0416be271424a119ea9829d0964b7816
+    build-commands:
+      - ls -la
+      - install -Dm644 16x16/apps/logo.svg /app/share/icons/hicolor/16x16/apps/com.eugeny.tabby.svg
+      - install -Dm644 32x32/apps/logo.svg /app/share/icons/hicolor/32x32/apps/com.eugeny.tabby.svg
+      - install -Dm644 64x64/apps/logo.svg /app/share/icons/hicolor/64x64/apps/com.eugeny.tabby.svg
+      - install -Dm644 128x128/apps/logo.svg /app/share/icons/hicolor/128x128/apps/com.eugeny.tabby.svg
+      - install -Dm644 256x256/apps/logo.svg /app/share/icons/hicolor/256x256/apps/com.eugeny.tabby.svg
+      - install -Dm644 512x512/apps/logo.svg /app/share/icons/hicolor/512x512/apps/com.eugeny.tabby.svg
+      - install -Dm644 -t /app/share/applications com.eugeny.tabby.desktop
+      - mkdir -p /app/main /app/bin
+      - cp -ra main/* /app/main/
+      - chmod a+x /app/main/tabby
+      - "sed -i -e 's%/usr/share/defaults/etc/shells%/app/shells%' /app/main/resources/builtin-plugins/tabby-electron/src/shells/posix.ts"
+      - "sed -i -e 's%/usr/share/defaults/etc/shells%/app/shells%' /app/main/resources/builtin-plugins/tabby-electron/dist/index.js"
+      - "sed -i -e 's%/etc/shells%/app/shells%' /app/main/resources/builtin-plugins/tabby-electron/src/shells/posix.ts"
+      - "echo /usr/bin/flatpak-spawn > /app/shells"
+      - install tabby-wrapper /app/bin/

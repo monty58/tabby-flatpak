@@ -1,9 +1,9 @@
 [Desktop Entry]
-Name=Terminus
-Exec=terminus-wrapper
+Name=Tabby
+Exec=tabby-wrapper
 Terminal=false
 Type=Application
-Icon=com.eugeny.terminus
-StartupWMClass=Terminus
+Icon=com.eugeny.tabby
+StartupWMClass=Tabby
 Comment=A terminal for a modern age
 Categories=Utility;
