@@ -56,7 +56,8 @@ modules:
       - mkdir -p /app/main /app/bin
       - cp -ra main/* /app/main/
       - chmod a+x /app/main/tabby
-      - "sed -i -e 's%/usr/share/defaults/etc/shells%/usr/bin/flatpak-spawn%' /app/main/resources/builtin-plugins/tabby-electron/src/shells/posix.ts"
-      - "sed -i -e 's%/etc/shells%/usr/bin/flatpak-spawn%' /app/main/resources/builtin-plugins/tabby-electron/src/shells/posix.ts"
-      - "echo /usr/bin/flatpak-spawn > /usr/share/defaults/etc/shells"
+      - "sed -i -e 's%/usr/share/defaults/etc/shells%/app/shells%' /app/main/resources/builtin-plugins/tabby-electron/src/shells/posix.ts"
+      - "sed -i -e 's%/usr/share/defaults/etc/shells%/app/shells%' /app/main/resources/builtin-plugins/tabby-electron/dist/index.js"
+      - "sed -i -e 's%/etc/shells%/app/shells%' /app/main/resources/builtin-plugins/tabby-electron/src/shells/posix.ts"
+      - "echo /usr/bin/flatpak-spawn > /app/shells"
       - install tabby-wrapper /app/bin/
